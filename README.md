@@ -49,7 +49,7 @@ Then start `rilis`
 
 ## 🚧 TODO
 
-- [x] Setup `docker`` and `docker compose` on the server.
+- [x] Setup `docker` and `docker compose` on the server.
 - [x] Able to `scp` connection.
 - [x] Able to customize configuration via `rilis.toml`
 - [ ] Setup `CI/CD`
