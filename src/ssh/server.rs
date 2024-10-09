@@ -50,7 +50,11 @@ pub fn server(config: &config::Config, destroy: Option<bool>) {
 
                         // @NOTE
                         // execute docker compose up
-                        let docker_compose_up = command(&sess, "sudo docker compose up -d");
+                        let command_docker_compose_up = format!(
+                            "sudo docker compose -f {} up -d",
+                            config.docker.docker_compose
+                        );
+                        let docker_compose_up = command(&sess, command_docker_compose_up.as_str());
                         println!("{}", docker_compose_up);
 
                         // @NOTE
