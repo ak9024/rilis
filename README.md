@@ -26,16 +26,17 @@ Create configuration named `rilis.toml`.
 
 ```toml
 [ssh]
-# your public IPv4 address
 address = ""
-# default "root"
 username = ""
-# your private key ~/.ssh/id_rsa
-private_key = "/path/to/.ssh/id_rsa"
+private_key = "/Users/adiatma/.ssh/id_ed25519"
 
-[docker]
-# your docker compose location
-compose = "docker-compose.yaml"
+[server]
+scp = [ "docker-compose.yaml" ]
+commands = [
+  "sudo docker compose -f docker-compose.yaml up -d",
+  "sudo docker ps",
+  "ls"
+]
 ```
 
 ## Docker
@@ -60,17 +61,12 @@ Then start `rilis`
 rilis -h
 ```
 
-## Server Support
-
-- Ubuntu
-
-## 🚧 TODO
+## 🚧 Next
 
 - [x] Setup `docker` and `docker compose` on the server.
 - [x] Able to `scp` connection.
 - [x] Able to customize configuration via `rilis.toml`
 - [ ] Setup `CI/CD`
-- [ ] Able to pull and build image on the server.
 
 ## License
 
