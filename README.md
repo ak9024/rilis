@@ -1,5 +1,7 @@
 # Rilis
 
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ak9024/rilis/ci.yml?style=for-the-badge)
+
 Rilis is a local deployment tools built with Rust.
 
 [![asciicast](https://asciinema.org/a/680195.svg)](https://asciinema.org/a/680195)
@@ -25,11 +27,15 @@ For configuration we named `rilis.toml`.
 
 ```toml
 [ssh]
+# your public IPv4 address
 address = ""
-username = "root"
+# default "root"
+username = ""
+# your private key ~/.ssh/id_rsa
 private_key = "/path/to/.ssh/id_rsa"
 
 [docker]
+# your docker compose location
 compose = "docker-compose.yaml"
 ```
 
@@ -48,6 +54,12 @@ services:
 ```
 
 Then start `rilis`
+
+## More
+
+```shell
+rilis -h
+```
 
 ## Server Support
 
