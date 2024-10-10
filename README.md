@@ -27,7 +27,7 @@ For configuration we named `rilis.toml`.
 [ssh]
 address = ""
 username = "root"
-key = "/path/to/.ssh/id_rsa"
+private_key = "/path/to/.ssh/id_rsa"
 
 [docker]
 compose = "docker-compose.yaml"

@@ -21,7 +21,7 @@ pub struct SSHConfig {
     pub address: String,
     #[serde(default = "default_username")]
     pub username: String,
-    pub key: String,
+    pub private_key: String,
 }
 
 fn default_username() -> String {
@@ -34,8 +34,8 @@ impl Config {
             return Err("ssh address value must be set!".into());
         };
 
-        if self.ssh.key.is_empty() {
-            return Err("ssh key must be set!".into());
+        if self.ssh.private_key.is_empty() {
+            return Err("ssh private_key must be set!".into());
         }
 
         Ok(self)

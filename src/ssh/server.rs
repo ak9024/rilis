@@ -15,8 +15,8 @@ pub fn server(config: &config::Config, destroy: Option<bool>) {
 
     let public_key = sess.userauth_pubkey_file(
         &config.ssh.username,
-        Some(Path::new("/Users/adiatma/.ssh/id_ed25519.pub")),
-        Path::new(&config.ssh.key),
+        None,
+        Path::new(&config.ssh.private_key),
         None,
     );
 
