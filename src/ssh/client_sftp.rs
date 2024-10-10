@@ -4,7 +4,11 @@ use log::info;
 use russh::client;
 use russh_sftp::{client::SftpSession, protocol::OpenFlags};
 
-pub async fn client_sftp(session: &client::Handle<Client>, file: &str) -> Result<()> {
+pub async fn client_sftp(
+    session: &client::Handle<Client>,
+    local_path: &str,
+    server_path: &str,
+) -> Result<()> {
     let channel = session.channel_open_session().await?;
     channel.request_subsystem(true, "sftp").await.unwrap();
 
@@ -15,12 +19,12 @@ pub async fn client_sftp(session: &client::Handle<Client>, file: &str) -> Result
     let mut local_file = tokio::fs::OpenOptions::new()
         .read(true)
         .write(true)
-        .open(file)
+        .open(local_path)
         .await?;
 
     let mut remote_file = sftp
         .open_with_flags(
-            file,
+            server_path,
             OpenFlags::CREATE | OpenFlags::TRUNCATE | OpenFlags::WRITE | OpenFlags::READ,
         )
         .await?;

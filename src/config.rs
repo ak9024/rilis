@@ -3,17 +3,13 @@ use serde::Deserialize;
 #[derive(Deserialize, Debug)]
 pub struct Config {
     pub ssh: SSHConfig,
-    pub docker: Docker,
+    pub server: Server,
 }
 
 #[derive(Deserialize, Debug)]
-pub struct Docker {
-    #[serde(default = "default_docker_compose")]
-    pub docker_compose: String,
-}
-
-fn default_docker_compose() -> String {
-    "docker-compose.yaml".to_string()
+pub struct Server {
+    pub scp: Vec<String>,
+    pub commands: Vec<String>,
 }
 
 #[derive(Deserialize, Debug)]
