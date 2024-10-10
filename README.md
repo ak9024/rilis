@@ -1,6 +1,10 @@
 # Rilis
 
-Rilis is a tool for deployment built with Rust.
+Rilis is a local deployment tools built with Rust.
+
+## 🚧 Notes
+
+> This CLI is under development
 
 ## Features
 
