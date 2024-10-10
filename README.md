@@ -23,7 +23,7 @@ cargo install --git https://github.com/ak9024/rilis
 
 ## Configuration
 
-For configuration we named `rilis.toml`.
+Create configuration named `rilis.toml`.
 
 ```toml
 [ssh]
