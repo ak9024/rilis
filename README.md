@@ -10,7 +10,7 @@ Rilis is a tool for deployment built with Rust.
 ## Installation
 
 ```shell
-cargo install rilis
+cargo install --git https://github.com/ak9024/rilis
 ```
 
 ## Configuration
