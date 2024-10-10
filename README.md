@@ -2,8 +2,6 @@
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ak9024/rilis/ci.yml?style=for-the-badge)
 
-Rilis is a local deployment tools built with Rust.
-
 [![asciicast](https://asciinema.org/a/680195.svg)](https://asciinema.org/a/680195)
 
 ## 🚧 Notes
@@ -12,8 +10,9 @@ Rilis is a local deployment tools built with Rust.
 
 ## Features
 
-- Deploy effortlessly to VM (Virtual Machine)
-- Just need `rilis.toml` for configuration.
+- Effortless VM (Virtual Machine) Deployment
+- Simply configure with a `rilis.toml` and use `docker-compose.yaml` locally.
+
 
 ## Installation
 
