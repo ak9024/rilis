@@ -53,38 +53,6 @@ async fn main() -> Result<()> {
                     println!("{result}")
                 }
 
-                //// ssh: check docker version
-                //let docker_version = ssh.call("sudo docker --version").await?;
-                //println!("{docker_version}");
-                //if !docker_version.contains("Docker version") {
-                //    // ssh: install docker.
-                //    let install_docker = ssh.call(INSTALL_DOCKER).await?;
-                //    println!("{install_docker}");
-                //}
-                //
-                //// scp: copy docker-compose.yaml to server.
-                //let session = &ssh.session;
-                //let local_path = validated_config.docker.docker_compose.as_str();
-                //let server_path = validated_config.docker.docker_compose.as_str();
-                //client_sftp(session, local_path, server_path).await?;
-                //info!("Success to copying...");
-                //
-                //// ssh: docker compose -f {} up -d
-                //let run_docker_compose = ssh
-                //    .call(
-                //        format!(
-                //            "sudo docker compose -f {} up -d",
-                //            validated_config.docker.docker_compose
-                //        )
-                //        .as_str(),
-                //    )
-                //    .await?;
-                //println!("{run_docker_compose}");
-                //
-                //// ssh: docker ps
-                //let docker_ps = ssh.call("sudo docker ps").await?;
-                //println!("{docker_ps}");
-
                 // close the ssh connection
                 ssh.close().await?;
             }
