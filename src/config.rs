@@ -22,10 +22,16 @@ pub struct SSHConfig {
     #[serde(default = "default_username")]
     pub username: String,
     pub private_key: String,
+    #[serde(default = "default_port")]
+    pub port: i64,
 }
 
 fn default_username() -> String {
     "root".to_string()
+}
+
+fn default_port() -> i64 {
+    22
 }
 
 impl Config {
