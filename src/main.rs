@@ -5,9 +5,8 @@ use rilis::{
     args::Args,
     config,
     logger::setup_logger,
-    ssh::{self, ubuntu::INSTALL_DOCKER},
+    ssh::{client::Session, client_sftp::client_sftp, ubuntu::INSTALL_DOCKER},
 };
-use russh_sftp::{client::SftpSession, protocol::OpenFlags};
 use std::{fs, path::Path, process};
 
 #[tokio::main]
@@ -26,7 +25,7 @@ async fn main() -> Result<()> {
     match toml::from_str::<config::Config>(&content) {
         Ok(config) => match config.validation() {
             Ok(validated_config) => {
-                let mut ssh = ssh::Session::connect(
+                let mut ssh = Session::connect(
                     &validated_config.ssh.private_key,
                     &validated_config.ssh.username,
                     format!(
@@ -51,25 +50,9 @@ async fn main() -> Result<()> {
                 }
 
                 // scp: copy docker-compose.yaml to server.
-                let channel = ssh.session.channel_open_session().await.unwrap();
-                channel.request_subsystem(true, "sftp").await.unwrap();
-                let sftp = SftpSession::new(channel.into_stream()).await.unwrap();
-                info!("Current path: {:?}", sftp.canonicalize(".").await.unwrap());
-                let mut local_file = tokio::fs::OpenOptions::new()
-                    .read(true)
-                    .write(true)
-                    .open(&validated_config.docker.docker_compose)
-                    .await?;
-                let mut remote_file = sftp
-                    .open_with_flags(
-                        &validated_config.docker.docker_compose,
-                        OpenFlags::CREATE
-                            | OpenFlags::TRUNCATE
-                            | OpenFlags::WRITE
-                            | OpenFlags::READ,
-                    )
-                    .await?;
-                tokio::io::copy(&mut local_file, &mut remote_file).await?;
+                let session = &ssh.session;
+                client_sftp(session, validated_config.docker.docker_compose.as_str()).await?;
+                info!("Success to copying...");
 
                 // ssh: docker compose -f {} up -d
                 let run_docker_compose = ssh
