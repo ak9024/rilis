@@ -2,6 +2,8 @@
 
 Rilis is a local deployment tools built with Rust.
 
+[![asciicast](https://asciinema.org/a/680195.svg)](https://asciinema.org/a/680195)
+
 ## 🚧 Notes
 
 > This CLI is under development
