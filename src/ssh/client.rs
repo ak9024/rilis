@@ -103,8 +103,6 @@ impl Session {
                 // Wait for the next update
                 time::sleep(refresh_rate).await;
             }
-
-            pb.finish_print("Done!"); // Complete the progress bar when done
         });
 
         // Wait for the SSH command to process
