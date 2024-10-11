@@ -23,8 +23,9 @@ async fn main() -> Result<()> {
             Ok(vc) => {
                 // do connect to server via ssh
                 let mut ssh = Session::connect(
-                    &vc.ssh.private_key,
+                    vc.ssh.private_key.clone(),
                     &vc.ssh.username,
+                    vc.ssh.password.clone(),
                     format!("{}:{}", vc.ssh.address, vc.ssh.port),
                 )
                 .await?;

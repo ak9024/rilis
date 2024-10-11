@@ -17,7 +17,8 @@ pub struct SSHConfig {
     pub address: String,
     #[serde(default = "default_username")]
     pub username: String,
-    pub private_key: String,
+    pub private_key: Option<String>,
+    pub password: Option<String>,
     #[serde(default = "default_port")]
     pub port: i64,
 }
