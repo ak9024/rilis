@@ -2,7 +2,7 @@ use anyhow::Result;
 use async_trait::async_trait;
 use russh::*;
 use russh_keys::*;
-use std::{path::Path, sync::Arc, time::Duration};
+use std::{path::Path, sync::Arc};
 use tokio::net::ToSocketAddrs;
 
 pub struct Client {}
@@ -25,26 +25,32 @@ pub struct Session {
 
 impl Session {
     pub async fn connect<P: AsRef<Path>, A: ToSocketAddrs>(
-        key_path: P,
+        key_path: Option<P>,
         user: impl Into<String>,
+        password: Option<String>,
         addrs: A,
     ) -> Result<Self> {
-        let key_pair = load_secret_key(key_path, None)?;
-        let config = client::Config {
-            inactivity_timeout: Some(Duration::from_secs(5)),
-            ..<_>::default()
-        };
+        let config = client::Config { ..<_>::default() };
 
         let config = Arc::new(config);
         let sh = Client {};
 
         let mut session = client::connect(config, addrs, sh).await?;
-        let auth_res = session
-            .authenticate_publickey(user, Arc::new(key_pair))
-            .await?;
+        let user = user.into();
+
+        let auth_res = if let Some(key_path) = key_path {
+            let key_pair = load_secret_key(key_path, None)?;
+            session
+                .authenticate_publickey(user, Arc::new(key_pair))
+                .await?
+        } else if let Some(password) = password {
+            session.authenticate_password(user, password).await?
+        } else {
+            anyhow::bail!("Either key_path or password must be provided")
+        };
 
         if !auth_res {
-            anyhow::bail!("Authenticate failed")
+            anyhow::bail!("Authentication failed")
         };
 
         Ok(Self { session })
