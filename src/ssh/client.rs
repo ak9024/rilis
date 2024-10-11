@@ -1,5 +1,6 @@
 use anyhow::Result;
 use async_trait::async_trait;
+use log::info;
 use pbr::ProgressBar;
 use russh::*;
 use russh_keys::*;
@@ -65,6 +66,8 @@ impl Session {
     }
 
     pub async fn call(&mut self, command: &str) -> Result<String> {
+        info!("{command}");
+
         let mut channel = self.session.channel_open_session().await?;
         channel.exec(true, command).await?;
 
