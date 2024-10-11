@@ -11,7 +11,7 @@
 ## Features
 
 - Effortless VM (Virtual Machine) Deployment
-- Simply configure with a `rilis.toml` and use `docker-compose.yaml` locally.
+- Simply configure with a file `deploy.toml` or `anything.toml` and use `docker-compose.yaml` locally.
 
 
 ## Installation
@@ -22,7 +22,7 @@ cargo install --git https://github.com/ak9024/rilis
 
 ## Configuration
 
-Create configuration named `rilis.toml`.
+Create configuration named `deploy.toml`.
 
 ```toml
 [ssh]
@@ -53,7 +53,7 @@ services:
       - "3000:80"
 ```
 
-Then start `rilis`
+Then start `rilis --cfg deploy.toml`
 
 ## More
 

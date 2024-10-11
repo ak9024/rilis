@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
 pub struct Args {
-    #[arg(long = "cfg", default_value = "rilis.toml")]
+    #[arg(long = "cfg")]
     pub config: PathBuf,
 }
 
