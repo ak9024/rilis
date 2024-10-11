@@ -15,8 +15,14 @@ async fn main() -> Result<()> {
 
     let args = Args::parse();
 
-    // read then configuration from rilis.toml then process to validation
-    let content = fs::read_to_string(args.config).unwrap();
+    let content = match fs::read_to_string(args.config) {
+        Ok(content) => content,
+        Err(e) => {
+            error!("Failed to read configuration file: {:?}", e.to_string());
+            std::process::exit(0)
+        }
+    };
+
     match toml::from_str::<config::Config>(&content) {
         // if validated do ssh connection to the server
         Ok(config) => match config.validation() {
@@ -32,6 +38,7 @@ async fn main() -> Result<()> {
 
                 info!("Connected: {}@{}", vc.ssh.username, vc.ssh.address);
 
+                // if scp exists, do execute
                 match &vc.server.scp {
                     Some(scp) => {
                         for file in scp.to_vec() {
@@ -42,6 +49,7 @@ async fn main() -> Result<()> {
                     None => {}
                 }
 
+                // execute commands
                 for cmd in vc.server.commands.to_vec() {
                     let result = ssh.call(cmd.as_str()).await?;
                     println!("{result}")
