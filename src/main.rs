@@ -7,7 +7,7 @@ use rilis::{
     logger::setup_logger,
     ssh::{client::Session, client_sftp::client_sftp},
 };
-use std::{fs, path::Path, process};
+use std::fs;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -15,40 +15,33 @@ async fn main() -> Result<()> {
 
     let args = Args::parse();
 
-    // if `rilis.toml` doesn't exists, exit the process.
-    if !Path::new("rilis.toml").exists() {
-        error!("Please create file config: rilis.toml");
-        process::exit(1);
-    }
-
     // read then configuration from rilis.toml then process to validation
-    let content = fs::read_to_string(args.config).unwrap_or("rilis.toml".to_string());
+    let content = fs::read_to_string(args.config).unwrap();
     match toml::from_str::<config::Config>(&content) {
         // if validated do ssh connection to the server
         Ok(config) => match config.validation() {
-            Ok(validated_config) => {
+            Ok(vc) => {
                 // do connect to server via ssh
                 let mut ssh = Session::connect(
-                    &validated_config.ssh.private_key,
-                    &validated_config.ssh.username,
-                    format!(
-                        "{}:{}",
-                        validated_config.ssh.address, validated_config.ssh.port
-                    ),
+                    &vc.ssh.private_key,
+                    &vc.ssh.username,
+                    format!("{}:{}", vc.ssh.address, vc.ssh.port),
                 )
                 .await?;
 
-                info!(
-                    "Connected: {}@{}",
-                    validated_config.ssh.username, validated_config.ssh.address
-                );
+                info!("Connected: {}@{}", vc.ssh.username, vc.ssh.address);
 
-                for file in validated_config.server.scp.to_vec() {
-                    let session = &ssh.session;
-                    client_sftp(session, file.as_str(), file.as_str()).await?;
+                match &vc.server.scp {
+                    Some(scp) => {
+                        for file in scp.to_vec() {
+                            let session = &ssh.session;
+                            client_sftp(session, file.as_str(), file.as_str()).await?;
+                        }
+                    }
+                    None => {}
                 }
 
-                for cmd in validated_config.server.commands.to_vec() {
+                for cmd in vc.server.commands.to_vec() {
                     let result = ssh.call(cmd.as_str()).await?;
                     println!("{result}")
                 }

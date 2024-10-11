@@ -8,7 +8,7 @@ pub struct Config {
 
 #[derive(Deserialize, Debug)]
 pub struct Server {
-    pub scp: Vec<String>,
+    pub scp: Option<Vec<String>>,
     pub commands: Vec<String>,
 }
 
@@ -35,10 +35,6 @@ impl Config {
         if self.ssh.address.is_empty() {
             return Err("ssh address value must be set!".into());
         };
-
-        if self.ssh.private_key.is_empty() {
-            return Err("ssh private_key must be set!".into());
-        }
 
         Ok(self)
     }
