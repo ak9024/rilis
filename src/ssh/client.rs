@@ -55,12 +55,11 @@ impl Session {
 
         Ok(Self { session })
     }
-
     pub async fn call(&mut self, command: &str) -> Result<String> {
         let mut channel = self.session.channel_open_session().await?;
         channel.exec(true, command).await?;
 
-        let mut stdout = String::new();
+        let mut stdout = Vec::new();
         let mut stderr = String::new();
 
         loop {
@@ -70,7 +69,7 @@ impl Session {
 
             match msg {
                 ChannelMsg::Data { ref data } => {
-                    stdout.push_str(&String::from_utf8_lossy(data));
+                    stdout.extend_from_slice(data);
                 }
                 ChannelMsg::ExtendedData { ref data, .. } => {
                     stderr.push_str(&String::from_utf8_lossy(data));
@@ -82,7 +81,7 @@ impl Session {
         if stdout.is_empty() {
             Ok(stderr)
         } else {
-            Ok(stdout)
+            Ok(String::from_utf8_lossy(&stdout).into_owned())
         }
     }
 
