@@ -4,6 +4,10 @@
 
 [![asciicast](https://asciinema.org/a/680195.svg)](https://asciinema.org/a/680195)
 
+## Why?
+
+I build this tools for my use cases, i need to communicate with my server then need to automate deployment from my local computer to the VM server i have.
+
 ## 🚧 Notes
 
 > This project still under development
