@@ -24,6 +24,8 @@ I build this tools for my use cases, i need to communicate with my server then n
 cargo install --git https://github.com/ak9024/rilis
 ```
 
+Please see the examples [here](https://github.com/ak9024/examples-rilis)
+
 ## Configuration
 
 Create configuration named `deploy.toml`.
