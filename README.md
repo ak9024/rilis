@@ -30,18 +30,19 @@ Create configuration named `deploy.toml`.
 
 ```toml
 [ssh]
-# IPv4 address can be define here.
+# required IPv4 address can be define here.
 address = ""
+# optional, by default is "root"
 username = ""
-# You can choose to using "password" or "private_key"
+# You can choose one using "password" or "private_key"
 password = ""
-# Your private_key location
+# optional if do you want to connect via private_key
 private_key = "/Users/adiatma/.ssh/id_ed25519"
-# by default port 22, but you can customize by your self.
+# optional by default port 22, but you can customize by your self.
 port = 22
 
 [server]
-# scp is optional, if do you want to copying to file from local to the server, can be define here.
+# scp is optional, if do you want to copy file from local to the server, can be define here.
 scp = [ "docker-compose.yaml" ]
 # ssh commands if do you want to exec script or anything on the server.
 commands = [
@@ -60,7 +61,8 @@ Prepare your `docker-compose.yaml`
 version: "3.8"
 
 services:
-  test:
+  home:
+    container_name: home
     image: httpd:latest
     ports:
       - "3000:80"
@@ -79,7 +81,8 @@ rilis -h
 - [x] Setup `docker` and `docker compose` on the server.
 - [x] Able to `scp` connection.
 - [x] Able to customize configuration via `rilis.toml`
-- [ ] Setup `CI/CD`
+- [x] Setup `CI`
+- [ ] Setup `CD` realesed to crate.
 
 ## License
 
