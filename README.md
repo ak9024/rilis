@@ -8,10 +8,6 @@
 
 I build this tools for my use cases, i need to communicate with my server then need to automate deployment from my local computer to the VM server i have.
 
-## 🚧 Notes
-
-> This project still under development
-
 ## Key Features
 
 - Effortless VM (Virtual Machine) Deployment
@@ -21,6 +17,10 @@ I build this tools for my use cases, i need to communicate with my server then n
 ## Installation
 
 ```shell
+# download from crates
+cargo install rilis
+
+# download latest from git
 cargo install --git https://github.com/ak9024/rilis
 ```
 
@@ -77,14 +77,6 @@ Then start `rilis --cfg deploy.toml`
 ```shell
 rilis -h
 ```
-
-## 🚧 Next
-
-- [x] Setup `docker` and `docker compose` on the server.
-- [x] Able to `scp` connection.
-- [x] Able to customize configuration via `rilis.toml`
-- [x] Setup `CI`
-- [ ] Setup `CD` realesed to crate.
 
 ## License
 
