@@ -16,9 +16,10 @@ jobs:
       - name: Upload the binary releases
         uses: svenstaro/upload-release-action@v2
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/release/rilis
+          repo_token: ${{ secrets.RELEASE_TOKEN }}
+          file: rilis-${{ env.RELEASE_VERSION }}-${{ matrix.build.TARGET }}*
           tag: ${{ github.ref }}
+          release_name: "Release v${{ env.RELEASE_VERSION }}"
           overwrite: true
           file_glob: true
         
