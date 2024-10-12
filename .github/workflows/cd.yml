@@ -6,6 +6,22 @@ on:
       - "v*.*.*"
 
 jobs:
+  publish-github:
+    name: Publish binaries
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: cargo build --release
+      - name: Upload the binary releases
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/release/rilis
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
+        
   publish-crates:
     name: Publish on crates.io
     needs: publish-github
