@@ -6,7 +6,7 @@ on:
       - "v*.*.*"
 
 jobs:
-  crates:
+  publish-crates:
     name: Publish on crates.io
     needs: publish-github
     runs-on: ubuntu-latest
