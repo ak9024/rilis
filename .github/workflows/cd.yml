@@ -22,7 +22,7 @@ jobs:
         tag: ${{ github.ref }}
         overwrite: true
         
-  publish:
+  publish-on-crates:
     name: Publish on crates.io
     needs: publish-github
     runs-on: ubuntu-latest
