@@ -3,10 +3,10 @@ name: CD
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
 
 jobs:
-  build:
+  publish-github:
     name: Publish binaries
     runs-on: ubuntu-latest
 
@@ -19,10 +19,10 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: target/release/rilis
+        asset_name: rilis
         tag: ${{ github.ref }}
-        overwrite: true
         
-  publish-on-crates:
+  release:
     name: Publish on crates.io
     needs: publish-github
     runs-on: ubuntu-latest
