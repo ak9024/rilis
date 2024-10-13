@@ -1,0 +1,47 @@
+[package]
+name = "rilis"
+version = "0.1.0"
+edition = "2021"
+description = "Local deployment tools built with Rust"
+authors = ["Adiatma Kamarudin <adiatma.mail@gmail.com>"]
+rust-version = "1.81.0"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/ak9024/rilis"
+keywords = ["cli"]
+categories = ["command-line-utilities"]
+include = [
+  "src/**/*",
+  "Cargo.*",
+  "LICENSE*",
+  "README.md",
+]
+
+[profile.dev]
+opt-level = 0
+debug = true
+panic = "abort"
+
+[profile.test]
+opt-level = 0
+debug = true
+
+[profile.release]
+opt-level = 3
+debug = false
+panic = "unwind"
+lto = true
+strip = true
+
+[dependencies]
+anyhow = "1.0.89"
+async-trait = "0.1.83"
+clap = { version = "4.5.20", features = ["derive"] }
+env_logger = "0.11.5"
+log = "0.4.22"
+pbr = "1.1.1"
+russh = "0.45.0"
+russh-keys = "0.45.0"
+russh-sftp = "2.0.5"
+serde = { version = "1.0.210", features = ["derive"] }
+tokio = { version = "1.40.0", features = ["full"] }
+toml = "0.8.19"
