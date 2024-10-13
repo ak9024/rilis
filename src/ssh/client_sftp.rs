@@ -9,12 +9,12 @@ pub async fn client_sftp(
     local_path: &str,
     server_path: &str,
 ) -> Result<()> {
+    info!("Copy {} to server", local_path);
+
     let channel = session.channel_open_session().await?;
     channel.request_subsystem(true, "sftp").await.unwrap();
 
     let sftp = SftpSession::new(channel.into_stream()).await.unwrap();
-
-    info!("{:?}", sftp.canonicalize(".").await.unwrap());
 
     let mut local_file = tokio::fs::OpenOptions::new()
         .read(true)

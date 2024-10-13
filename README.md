@@ -2,7 +2,7 @@
 
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ak9024/rilis/ci.yml?style=for-the-badge) ![GitHub License](https://img.shields.io/github/license/ak9024/rilis?style=for-the-badge) ![GitHub repo size](https://img.shields.io/github/repo-size/ak9024/rilis?style=for-the-badge)
 
-[![asciicast](https://asciinema.org/a/680195.svg)](https://asciinema.org/a/680195)
+[![asciicast](https://asciinema.org/a/680727.svg)](https://asciinema.org/a/680727)
 
 ## Why?
 
@@ -20,7 +20,7 @@ I build this tools for my use cases, i need to communicate with my server then n
 # download from crates
 cargo install rilis
 
-# download latest from git
+# download latest version from git
 cargo install --git https://github.com/ak9024/rilis
 ```
 
