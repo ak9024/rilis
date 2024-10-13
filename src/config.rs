@@ -40,3 +40,44 @@ impl Config {
         Ok(self)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_config() {
+        let config = Config {
+            ssh: SSHConfig {
+                address: "localhost".to_string(),
+                username: "root".to_string(),
+                password: None,
+                private_key: None,
+                port: 22,
+            },
+            server: Server {
+                scp: None,
+                commands: vec![],
+            },
+        };
+
+        assert_eq!(config.validation().is_ok(), true);
+
+        match config.validation() {
+            Ok(c) => {
+                // test ssh
+                assert_eq!(c.ssh.address, "localhost".to_string());
+                assert_eq!(c.ssh.username, "root".to_string());
+                assert_eq!(c.ssh.password.is_none(), true);
+                assert_eq!(c.ssh.private_key.is_none(), true);
+                assert_eq!(c.ssh.port, 22);
+
+                // test server
+                assert_eq!(c.server.scp.is_none(), true);
+                assert_eq!(c.server.commands.is_empty(), true);
+            }
+
+            Err(e) => assert_eq!(e.is_empty(), true),
+        }
+    }
+}
