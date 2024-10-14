@@ -6,7 +6,7 @@
 
 ## Why?
 
-I build this tools for my use cases, i need to communicate with my server then need to automate deployment from my local computer to the VM server i have.
+I created this tool to streamline my workflow, allowing seamless communication with my server and automating the deployment process from my local machine to a virtual server. This tool is tailored to address my specific needs for efficient and automated deployments.
 
 ## Key Features
 
