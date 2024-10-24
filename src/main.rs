@@ -39,13 +39,6 @@ async fn main() -> Result<()> {
 
                 info!("Connected: {}@{}", vc.ssh.username, vc.ssh.address);
 
-                match &vc.port_forward {
-                    Some(pwc) => {
-                        pw::port_forward(pwc.local_addr.as_str(), &pwc.remote_addr).await?;
-                    }
-                    None => {}
-                }
-
                 // if scp exists, do execute
                 match &vc.server.scp {
                     Some(scp) => {
@@ -65,6 +58,14 @@ async fn main() -> Result<()> {
 
                 // close the ssh connection
                 ssh.close().await?;
+
+                // run port forward
+                match &vc.port_forward {
+                    Some(pwc) => {
+                        pw::port_forward(pwc.local_addr.as_str(), &pwc.remote_addr).await?;
+                    }
+                    None => {}
+                }
             }
             Err(e) => error!("{e:?}"),
         },
