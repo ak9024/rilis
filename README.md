@@ -51,6 +51,11 @@ commands = [
   "sudo docker compose -f docker-compose.yaml up -d",
   "sudo docker ps",
 ]
+
+# support tunneling from server to local
+[port_forward]
+remote_addr = ""
+local_addr = "localhost"
 ```
 
 > You can define multiple configuration for multiple use case for automation, examples to provision VM using `setup.toml`, then for deployment using `deploy.toml`.
