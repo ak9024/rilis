@@ -1,6 +1,6 @@
 [package]
 name = "rilis"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Local deployment tools built with Rust"
 authors = ["Adiatma Kamarudin <adiatma.mail@gmail.com>"]
