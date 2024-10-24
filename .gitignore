@@ -3,3 +3,5 @@
 
 # for testing
 config.toml
+
+.DS_Store

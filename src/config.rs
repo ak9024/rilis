@@ -4,6 +4,13 @@ use serde::Deserialize;
 pub struct Config {
     pub ssh: SSHConfig,
     pub server: Server,
+    pub port_forward: Option<PortForward>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct PortForward {
+    pub local_addr: String,
+    pub remote_addr: String,
 }
 
 #[derive(Deserialize, Debug)]
@@ -59,6 +66,7 @@ mod tests {
                 scp: None,
                 commands: vec![],
             },
+            port_forward: None,
         };
 
         assert_eq!(config.validation().is_ok(), true);

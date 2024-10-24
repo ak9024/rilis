@@ -5,6 +5,7 @@ use rilis::{
     args::Args,
     config,
     logger::setup_logger,
+    pw,
     ssh::{client::Session, client_sftp::client_sftp},
 };
 use std::fs;
@@ -37,6 +38,13 @@ async fn main() -> Result<()> {
                 .await?;
 
                 info!("Connected: {}@{}", vc.ssh.username, vc.ssh.address);
+
+                match &vc.port_forward {
+                    Some(pwc) => {
+                        pw::port_forward(pwc.local_addr.as_str(), &pwc.remote_addr).await?;
+                    }
+                    None => {}
+                }
 
                 // if scp exists, do execute
                 match &vc.server.scp {
