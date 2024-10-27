@@ -52,10 +52,10 @@ commands = [
   "sudo docker ps",
 ]
 
-# support tunneling from server to local
-[port_forward]
-remote_addr = ""
-local_addr = "localhost"
+# optional support tunneling from server to your local
+# [port_forward]
+# remote_addr = "your.ip.public:3000"
+# local_addr = "localhost:3000"
 ```
 
 > You can define multiple configuration for multiple use case for automation, examples to provision VM using `setup.toml`, then for deployment using `deploy.toml`.
@@ -82,6 +82,16 @@ Then start `rilis --cfg deploy.toml`
 ```shell
 rilis -h
 ```
+
+## Star History
+
+<a href="https://star-history.com/#ak9024/rilis&Timeline">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ak9024/rilis&type=Timeline&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ak9024/rilis&type=Timeline" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ak9024/rilis&type=Timeline" />
+ </picture>
+</a>
 
 ## License
 
