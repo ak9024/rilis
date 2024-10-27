@@ -83,6 +83,16 @@ Then start `rilis --cfg deploy.toml`
 rilis -h
 ```
 
+## Star History
+
+<a href="https://star-history.com/#ak9024/rilis&Timeline">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ak9024/rilis&type=Timeline&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ak9024/rilis&type=Timeline" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ak9024/rilis&type=Timeline" />
+ </picture>
+</a>
+
 ## License
 
 MIT & Apache 2.0
