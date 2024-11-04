@@ -64,7 +64,9 @@ async fn main() -> Result<()> {
                 // run port forward
                 match &vc.port_forward {
                     Some(pwc) => {
-                        pw::port_forward(pwc.local_addr.as_str(), &pwc.remote_addr).await?;
+                        for pw in pwc {
+                            pw::port_forward(pw.local_addr.as_str(), &pw.remote_addr).await?;
+                        }
                     }
                     None => {}
                 }
