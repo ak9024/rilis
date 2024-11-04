@@ -2,7 +2,7 @@ use anyhow::Result;
 use clap::Parser;
 use log::{error, info};
 use rilis::{
-    args::{print_brand, Args},
+    args::{title, Args},
     config,
     logger::setup_logger,
     pw,
@@ -12,9 +12,9 @@ use std::fs;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    setup_logger();
+    title();
 
-    print_brand();
+    setup_logger();
 
     let args = Args::parse();
 
