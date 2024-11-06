@@ -42,19 +42,16 @@ async fn main() -> Result<()> {
                 info!("Connected: {}@{}", vc.ssh.username, vc.ssh.address);
 
                 // if scp exists, do execute
-                match &vc.server.scp {
-                    Some(scp) => {
-                        for file in scp.to_vec() {
-                            let session = &ssh.session;
-                            client_sftp(session, file.as_str(), file.as_str()).await?;
-                        }
+                if let Some(scp) = &vc.server.scp {
+                    for file in scp {
+                        let session = &ssh.session;
+                        client_sftp(session, file.as_str(), file.as_str()).await?;
                     }
-                    None => {}
                 }
 
                 // execute commands
-                for cmd in vc.server.commands.to_vec() {
-                    let result = ssh.call(cmd.as_str()).await?;
+                for cmd in &vc.server.commands {
+                    let result = ssh.call(cmd).await?;
                     println!("{result}")
                 }
 
@@ -62,13 +59,21 @@ async fn main() -> Result<()> {
                 ssh.close().await?;
 
                 // run port forward
-                match &vc.port_forward {
-                    Some(pwc) => {
-                        for pw in pwc {
-                            pw::port_forward(pw.local_addr.as_str(), &pw.remote_addr).await?;
-                        }
+                if let Some(pwc) = &vc.port_forward {
+                    for pw in pwc {
+                        let local_addr = pw.local_addr.clone();
+                        let remote_addr = pw.remote_addr.clone();
+
+                        tokio::spawn(async move {
+                            loop {
+                                if let Err(e) = pw::port_forward(&local_addr, &remote_addr).await {
+                                    error!("Port forwarding error: {:?}", e);
+                                }
+                            }
+                        });
                     }
-                    None => {}
+
+                    tokio::signal::ctrl_c().await?;
                 }
             }
             Err(e) => error!("{e:?}"),

@@ -16,7 +16,7 @@ pub async fn handle_connection(inbound: TcpStream, remote_addr: String) -> io::R
     Ok(())
 }
 
-pub async fn port_forward(local_addr: &str, remote_addr: &String) -> io::Result<()> {
+pub async fn port_forward(local_addr: &str, remote_addr: &str) -> io::Result<()> {
     let listener = TcpListener::bind(local_addr).await?;
 
     info!("Listening on: {}", local_addr);
@@ -24,7 +24,7 @@ pub async fn port_forward(local_addr: &str, remote_addr: &String) -> io::Result<
     loop {
         let (inbound, _) = listener.accept().await?;
 
-        let remote_addr = remote_addr.clone();
+        let remote_addr = remote_addr.to_owned();
 
         tokio::spawn(async move {
             if let Err(e) = handle_connection(inbound, remote_addr).await {
