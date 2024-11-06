@@ -4,7 +4,7 @@ use serde::Deserialize;
 pub struct Config {
     pub ssh: SSHConfig,
     pub server: Server,
-    pub port_forward: Option<PortForward>,
+    pub port_forward: Option<Vec<PortForward>>,
 }
 
 #[derive(Deserialize, Debug)]

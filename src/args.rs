@@ -10,7 +10,7 @@ const BRAND: &str = r#"
                 
 "#;
 
-pub fn print_brand() {
+pub fn title() {
     println!("{}", BRAND)
 }
 
