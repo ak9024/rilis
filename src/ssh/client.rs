@@ -82,11 +82,7 @@ impl Session {
             }
         }
 
-        if stdout_data.is_empty() {
-            Ok(stderr)
-        } else {
-            Ok(String::from_utf8_lossy(&stdout_data).into_owned())
-        }
+        Ok(select_output(&stdout_data, &stderr))
     }
 
     pub async fn close(&mut self) -> Result<()> {
@@ -95,5 +91,47 @@ impl Session {
             .await?;
 
         Ok(())
+    }
+}
+
+/// Choose which stream to return as the command's textual result.
+///
+/// Prefer standard output when the command produced any; otherwise fall back
+/// to standard error (which carries the message for commands that only fail).
+fn select_output(stdout: &[u8], stderr: &str) -> String {
+    if stdout.is_empty() {
+        stderr.to_string()
+    } else {
+        String::from_utf8_lossy(stdout).into_owned()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::select_output;
+
+    #[test]
+    fn prefers_stdout_when_present() {
+        let out = select_output(b"hello\n", "some warning");
+        assert_eq!(out, "hello\n");
+    }
+
+    #[test]
+    fn falls_back_to_stderr_when_stdout_empty() {
+        let out = select_output(b"", "command not found");
+        assert_eq!(out, "command not found");
+    }
+
+    #[test]
+    fn returns_empty_when_both_empty() {
+        let out = select_output(b"", "");
+        assert_eq!(out, "");
+    }
+
+    #[test]
+    fn handles_invalid_utf8_in_stdout_lossily() {
+        // 0xff is not valid UTF-8; it should be replaced, not panic.
+        let out = select_output(&[0xff, 0xfe], "");
+        assert!(!out.is_empty());
     }
 }

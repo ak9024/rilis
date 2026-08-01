@@ -1,85 +1,89 @@
-use anyhow::Result;
+use anyhow::{anyhow, Context, Result};
 use clap::Parser;
 use log::{error, info};
 use rilis::{
     args::{title, Args},
-    config,
+    config::{Config, PortForward},
     logger::setup_logger,
     pw,
     ssh::{client::Session, client_sftp::client_sftp},
 };
-use std::fs;
 
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn main() {
     title();
-
     setup_logger();
 
     let args = Args::parse();
 
-    let content = match fs::read_to_string(args.config) {
-        Ok(content) => content,
-        Err(e) => {
-            error!("Failed to read configuration file: {:?}", e.to_string());
-            std::process::exit(0)
+    if let Err(e) = run(args).await {
+        error!("{e:?}");
+        std::process::exit(1);
+    }
+}
+
+/// Load and validate the configuration, then run the deployment.
+async fn run(args: Args) -> Result<()> {
+    let config = Config::from_path(&args.config)?;
+    config.validation().map_err(|e| anyhow!(e))?;
+    deploy(&config).await
+}
+
+/// Connect over SSH, copy any requested files, run the configured commands,
+/// then optionally keep the process alive serving port forwards.
+async fn deploy(config: &Config) -> Result<()> {
+    let ssh = &config.ssh;
+
+    let mut session = Session::connect(
+        ssh.private_key.clone(),
+        &ssh.username,
+        ssh.password.clone(),
+        format!("{}:{}", ssh.address, ssh.port),
+    )
+    .await
+    .context("failed to establish ssh connection")?;
+
+    info!("Connected: {}@{}", ssh.username, ssh.address);
+
+    // Copy local files up to the server, if any were configured.
+    if let Some(files) = &config.server.scp {
+        for file in files {
+            client_sftp(&session.session, file, file).await?;
         }
-    };
+    }
 
-    match toml::from_str::<config::Config>(&content) {
-        // if validated do ssh connection to the server
-        Ok(config) => match config.validation() {
-            Ok(vc) => {
-                // do connect to server via ssh
-                let mut ssh = Session::connect(
-                    vc.ssh.private_key.clone(),
-                    &vc.ssh.username,
-                    vc.ssh.password.clone(),
-                    format!("{}:{}", vc.ssh.address, vc.ssh.port),
-                )
-                .await?;
+    // Execute the configured remote commands in order.
+    for command in &config.server.commands {
+        let output = session.call(command).await?;
+        println!("{output}");
+    }
 
-                info!("Connected: {}@{}", vc.ssh.username, vc.ssh.address);
+    session.close().await?;
 
-                // if scp exists, do execute
-                if let Some(scp) = &vc.server.scp {
-                    for file in scp {
-                        let session = &ssh.session;
-                        client_sftp(session, file.as_str(), file.as_str()).await?;
-                    }
-                }
-
-                // execute commands
-                for cmd in &vc.server.commands {
-                    let result = ssh.call(cmd).await?;
-                    println!("{result}")
-                }
-
-                // close the ssh connection
-                ssh.close().await?;
-
-                // run port forward
-                if let Some(pwc) = &vc.port_forward {
-                    for pw in pwc {
-                        let local_addr = pw.local_addr.clone();
-                        let remote_addr = pw.remote_addr.clone();
-
-                        tokio::spawn(async move {
-                            loop {
-                                if let Err(e) = pw::port_forward(&local_addr, &remote_addr).await {
-                                    error!("Port forwarding error: {:?}", e);
-                                }
-                            }
-                        });
-                    }
-
-                    tokio::signal::ctrl_c().await?;
-                }
-            }
-            Err(e) => error!("{e:?}"),
-        },
-        Err(e) => error!("{:?}", e.message()),
+    // If port forwards are configured, serve them until interrupted.
+    if let Some(forwards) = &config.port_forward {
+        spawn_port_forwards(forwards);
+        tokio::signal::ctrl_c()
+            .await
+            .context("failed to wait for ctrl-c")?;
     }
 
     Ok(())
+}
+
+/// Spawn a resilient background task for each port forward, restarting it if it
+/// exits with an error.
+fn spawn_port_forwards(forwards: &[PortForward]) {
+    for forward in forwards {
+        let local_addr = forward.local_addr.clone();
+        let remote_addr = forward.remote_addr.clone();
+
+        tokio::spawn(async move {
+            loop {
+                if let Err(e) = pw::port_forward(&local_addr, &remote_addr).await {
+                    error!("Port forwarding error: {:?}", e);
+                }
+            }
+        });
+    }
 }
